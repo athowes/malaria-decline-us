@@ -1,0 +1,23 @@
+script: script.R
+
+artefacts:
+  - data:
+      description: Dictionary for imputing numeric from categorical 1933-1937
+      filenames:
+        - impute-numeric-Y33-37.csv
+
+packages:
+  - dplyr
+  - forcats
+  - ggplot2
+  - INLA
+  - naomi
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+  - readxl
+
+global_resources:
+  depends/usa_data_july2021.xlsx: USA data July 2021.xlsx
