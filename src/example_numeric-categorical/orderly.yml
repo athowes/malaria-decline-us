@@ -1,0 +1,13 @@
+script: script.R
+
+packages:
+  - dplyr
+  - ggplot2
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+  - readxl
+  - rstan
+

@@ -1,0 +1,30 @@
+script: script.R
+
+artefacts:
+  - data:
+      description: Numeric mortality data from 1940-1948
+      filenames:
+        - clorpleth-1940-to-1948.pdf
+  - data:
+      description: Categorical mortality data from 1933-1937
+      filenames:
+        - clorpleth-1933-to-1937.pdf
+
+packages:
+  - dplyr
+  - ggplot2
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+  - readxl
+
+global_resources:
+  depends/usa_data_july2021.xlsx: USA data July 2021.xlsx
+
+depends:
+  data_areas:
+    id: latest
+    use:
+      depends/southern13_areas.geojson: southern13_areas.geojson

@@ -1,0 +1,28 @@
+script: script.R
+
+artefacts:
+  - data:
+      description: Smoothed estimates
+      filenames:
+        - estimates.csv
+
+packages:
+  - dplyr
+  - forcats
+  - ggplot2
+  - INLA
+  - naomi
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+
+global_resources:
+  depends/usa_data_july2021.xlsx: USA data July 2021.xlsx
+
+depends:
+  data_areas:
+    id: latest
+    use:
+      depends/southern13_areas.geojson: southern13_areas.geojson

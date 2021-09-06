@@ -1,0 +1,23 @@
+source: script.R
+
+artefacts:
+  - data:
+      description: Processed covariates
+      filenames:
+        - processed-covariates.csv
+
+packages:
+  - dplyr
+  - forcats
+  - ggplot2
+  - INLA
+  - naomi
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+  - readxl
+
+global_resources:
+  depends/usa_data_july2021.xlsx: USA data July 2021.xlsx

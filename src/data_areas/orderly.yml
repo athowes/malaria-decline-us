@@ -1,0 +1,24 @@
+script: script.R
+
+artefacts:
+  - data:
+      description: The Southern 13 areas
+      filenames:
+        - southern13_areas.geojson
+  - data:
+      description: Plot of the shapefile extracted
+      filenames:
+        - shapefile-plot.pdf
+
+packages:
+  - dplyr
+  - ggplot2
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+  - readxl
+
+global_resources:
+  depends/usa_shapefile.zip: USA shapefile.zip
