@@ -1,14 +1,10 @@
-# orderly::orderly_develop_start("fit_sae-numeric")
-# setwd("src/fit_sae-numeric")
+# orderly::orderly_develop_start("fit_sae-Y33-48")
+# setwd("src/fit_sae-Y33-48")
 
 usa_data <- read_excel("depends/usa_data_july2021.xlsx")
 areas <- read_sf("depends/southern13_areas.geojson")
 
 usa_data <- usa_data %>%
-  #' Calculate the mortality rate (per 100,000) for 1945-1948
-  #' Then the deaths columns can be removed
-  #' TODO: Impute something better than uspop1940
-  #' Really 1950 is closer, I could just use linear interpolation
   mutate(
     malrat45 = 100000 * maldths45 / uspop1940,
     malrat46 = 100000 * maldths46 / uspop1940,
@@ -16,13 +12,26 @@ usa_data <- usa_data %>%
     malrat48 = 100000 * maldths48 / uspop1940
   ) %>%
   select(-maldths45, -maldths46, -maldths47, -maldths48) %>%
-  #' Malaria deaths for 1939 and 1940 are combined
-  #' Suggest to divide by two for comparability with other single years
-  #' I'll just call this 1940 (even though it's an average of 1939 and 1940)
   mutate(
     malrat40 = 100000 * (maldths3940 / 2) / uspop1940
   ) %>%
-  select(-maldths3940)
+  select(-maldths3940) %>%
+  mutate(
+    #' Guessing these numbers
+    #' Better attempt? src/impute_numeric-Y33-37
+    malrat33 = dplyr::case_when(
+      (malratcat3337 == "0") ~ 0,
+      (malratcat3337 == "<25") ~ 12.5,
+      (malratcat3337 == "25-49.9") ~ 37.5,
+      (malratcat3337 == "50+") ~ 65,
+      TRUE ~ NA_real_
+    ),
+    malrat34 = malrat33,
+    malrat35 = malrat33,
+    malrat36 = malrat33,
+    malrat37 = malrat33
+  ) %>%
+  select(-malratcat3337)
 
 #' Using all the areas in the model
 areas_model <- areas %>%
@@ -42,21 +51,20 @@ to_int <- function(x) as.numeric(as.factor(x))
 
 #' Create scaffolding for estimates
 df <- crossing(
-  #' We only have data for some of these years, but want to predict the others
-  #' 40 is 1940 etc.
-  year = 40:48,
+  #' We only have data for some of these years, but want to predict the others, 40 is 1940 etc.
+  year = 33:48,
   areas_model %>%
     st_drop_geometry() %>%
     select(state, county, area_idx)
 ) %>%
   mutate(time_idx = to_int(year))
 
-#' Add malrat observations
+#' Add malrat observations from 1933-1937, 1940 and 1945-1948
 df <- df %>%
   left_join(
     usa_data %>%
       pivot_longer(
-        cols = starts_with("malrat4"),
+        cols = c(starts_with("malrat3"), starts_with("malrat4")),
         names_to = "year",
         names_prefix = "malrat",
         values_to = "malrat_raw"
@@ -72,7 +80,7 @@ tau_pc <- function(x = 0.001, u = 2.5, alpha = 0.01) {
 }
 
 #' Create INLA formula, Besag on space and AR1 on time, no covariates
-formula <- malrat ~ 1 +
+formula <- malrat_raw ~ 1 +
   f(area_idx, model = "besag", graph = adjM, scale.model = TRUE, constr = TRUE, hyper = tau_pc()) +
   f(time_idx, model = "ar1", constr = TRUE, hyper = tau_pc())
 
@@ -87,12 +95,12 @@ fit <- inla(
 #' Add fitted model to df
 res_df <- df %>%
   mutate(
-    malrat_est = fit$summary.fitted.values$mean
-    # malrat_sd = fit$summary.fitted.values$sd,
-    # malrat_lower = fit$summary.fitted.values$`0.025quant`,
-    # malrat_median = fit$summary.fitted.values$`0.5quant`,
-    # malrat_lower = fit$summary.fitted.values$`0.975quant`,
-    # malrat_mode = fit$summary.fitted.values$mode
+    malrat_est = fit$summary.fitted.values$mean,
+    malrat_sd = fit$summary.fitted.values$sd,
+    malrat_lower = fit$summary.fitted.values$`0.025quant`,
+    malrat_median = fit$summary.fitted.values$`0.5quant`,
+    malrat_upper = fit$summary.fitted.values$`0.975quant`,
+    malrat_mode = fit$summary.fitted.values$mode
   )
 
 res_plot <- res_df %>%

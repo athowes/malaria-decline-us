@@ -1,0 +1,30 @@
+script: script.R
+
+artefacts:
+  - data:
+      description: Smoothed estimates using the data from 1940-1948
+      filenames:
+        - estimates-Y40-48.csv
+        - estimates-Y40-48.pdf
+
+packages:
+  - dplyr
+  - forcats
+  - ggplot2
+  - INLA
+  - naomi
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+  - readxl
+
+global_resources:
+  depends/usa_data_july2021.xlsx: USA data July 2021.xlsx
+
+depends:
+  data_areas:
+    id: latest
+    use:
+      depends/southern13_areas.geojson: southern13_areas.geojson
