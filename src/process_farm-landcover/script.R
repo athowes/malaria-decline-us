@@ -19,3 +19,13 @@ df <- usa_data %>%
   )
 
 names(df)
+
+df_farm_landcover <- df %>%
+  pivot_longer(
+    cols = c(-state, -county),
+    names_to = c(".value", "year"),
+    names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
+  )

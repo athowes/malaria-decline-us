@@ -24,3 +24,13 @@ names(df)
 
 #' elecpr can be mutated using electric / nhgistotalfarm
 #' pavedpr can be mutated using roadpaved / nhgistotalfarm
+
+df_ses <- df %>%
+  pivot_longer(
+    cols = c(-state, -county),
+    names_to = c(".value", "year"),
+    names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
+  )

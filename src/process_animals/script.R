@@ -22,3 +22,15 @@ df <- usa_data %>%
 names(df)
 
 #' nhgisfarmcattlepr can be mutated using nhgisfarmcattle / nhgistotalfarm
+
+df_animals <- df %>%
+  pivot_longer(
+    cols = c(-county, -state),
+    names_to = c(".value", "year"),
+    names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    #' Prefer -99999 to be NA coded
+    #' TODO: Check with someone that -99999 doesn't mean anything in particular
+    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
+  )

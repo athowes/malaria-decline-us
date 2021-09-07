@@ -21,3 +21,17 @@ names(df)
 #' drainpr can be mutated using drain / countyarea_acres
 #' improvepr can be mutated using improved / countyarea_acres
 #' irrigatepr can be mutated using irrigate / countyarea_acres
+
+df_drainage_environmental <- df %>%
+  #' Numbers at the end of drained are year ranges, not years: for now just ignore
+  #' TODO: Think of approach to deal with this
+  #' There is no number after drainagelevel
+  select(-c(starts_with("drained"), "drainagelevel")) %>%
+  pivot_longer(
+    cols = c(-state, -county),
+    names_to = c(".value", "year"),
+    names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
+  )

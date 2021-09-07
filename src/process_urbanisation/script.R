@@ -20,10 +20,12 @@ names(df)
 
 #' usurbpr can be mutated using usurbanpop / uspop
 
-# df %>%
-#   pivot_longer(
-#     cols = starts_with("usurbanpop"),
-#     names_to = "year",
-#     names_prefix = "usurbanpop",
-#     values_to = "usurbanpop"
-#   )
+df_urbanisation <- df %>%
+  pivot_longer(
+    cols = c(-state, -county),
+    names_to = c(".value", "year"),
+    names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
+  )
