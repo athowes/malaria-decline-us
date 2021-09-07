@@ -5,7 +5,11 @@ usa_data <- read_excel("depends/usa_data_july2021.xlsx")
 
 df <- usa_data %>%
   select(
-    starts_with("temp"),
-    starts_with("prec"),
-    starts_with("fdf")
+    state,
+    county,
+    starts_with("temp"), #' Y
+    starts_with("prec"), #' Y
+    starts_with("fdf")   #' Y
   )
+
+names(df)
