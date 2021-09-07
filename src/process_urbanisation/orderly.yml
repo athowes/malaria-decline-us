@@ -1,4 +1,4 @@
-source: script.R
+script: script.R
 
 artefacts:
   - data:
