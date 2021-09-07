@@ -29,3 +29,5 @@ df_farm_landcover <- df %>%
   mutate(
     across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
   )
+
+write_csv(df_farm_landcover, "processed-covariates.csv", na = "")

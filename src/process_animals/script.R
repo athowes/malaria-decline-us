@@ -8,7 +8,8 @@ usa_data <- read_excel("depends/usa_data_july2021.xlsx")
 #' N: Mentioned in data dictionary and not found
 
 df <- usa_data %>%
-  select(
+  select(# orderly::orderly_develop_start("process_all-cause-mortality")
+    # setwd("src/process_all-cause-mortality")
     state,
     county,
     starts_with("nhgisfarmcattle"), #' Y
@@ -34,3 +35,5 @@ df_animals <- df %>%
     #' TODO: Check with someone that -99999 doesn't mean anything in particular
     across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
   )
+
+write_csv(df_animals, "processed-covariates.csv", na = "")

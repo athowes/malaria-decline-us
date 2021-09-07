@@ -34,3 +34,5 @@ df_ses <- df %>%
   mutate(
     across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
   )
+
+write_csv(df_ses, "processed-covariates.csv", na = "")

@@ -137,7 +137,6 @@ cloropleth <- function(x) {
 pdf("estimates-Y33-48.pdf", h = 11, w = 8.5)
 
 res_plot %>%
-  filter(year < 38) %>%
   split(.$year) %>%
   lapply(cloropleth)
 

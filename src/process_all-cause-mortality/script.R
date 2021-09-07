@@ -1,5 +1,5 @@
-orderly::orderly_develop_start("process_all-cause-mortality")
-setwd("src/process_all-cause-mortality")
+# orderly::orderly_develop_start("process_all-cause-mortality")
+# setwd("src/process_all-cause-mortality")
 
 usa_data <- read_excel("depends/usa_data_july2021.xlsx")
 
@@ -15,3 +15,8 @@ df <- usa_data %>%
   )
 
 names(df)
+
+#' Nothing here yet
+df_all_cause_mortality <- as.data.frame(0)
+
+write_csv(df_all_cause_mortality, "processed-covariates.csv", na = "")
