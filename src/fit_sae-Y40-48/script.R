@@ -94,7 +94,7 @@ res_df <- df %>%
     malrat_mode = fit$summary.fitted.values$mode
   )
 
-write_csv(res_df, "estimates-Y33-48.csv", na = "")
+write_csv(res_df, "smoothed-estimates.csv", na = "")
 
 res_plot <- res_df %>%
   select(-malrat_sd, -malrat_lower, -malrat_median, -malrat_upper, -malrat_mode) %>%
@@ -134,7 +134,7 @@ cloropleth <- function(x) {
   )
 }
 
-pdf("estimates-Y33-48.pdf", h = 11, w = 8.5)
+pdf("smoothed-estimates.pdf", h = 11, w = 8.5)
 
 res_plot %>%
   split(.$year) %>%

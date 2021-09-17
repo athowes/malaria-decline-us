@@ -4,8 +4,8 @@ artefacts:
   - data:
       description: Smoothed estimates using the data from 1933-1948
       filenames:
-        - estimates-Y33-48.csv
-        - estimates-Y33-48.pdf
+        - smoothed-estimates.csv
+        - smoothed-estimates.pdf
 
 packages:
   - dplyr

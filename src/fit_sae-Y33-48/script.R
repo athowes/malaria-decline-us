@@ -103,6 +103,8 @@ res_df <- df %>%
     malrat_mode = fit$summary.fitted.values$mode
   )
 
+write_csv(res_df, "smoothed-estimates.csv", na = "")
+
 res_plot <- res_df %>%
   pivot_longer(
     cols = c(starts_with("malrat")),
@@ -117,6 +119,7 @@ res_plot <- res_df %>%
 pdf("smoothed-estimates.pdf", h = 11, w = 8.5)
 
 res_plot %>%
+  filter(source %in% c("raw", "est")) %>%
   split(.$year) %>%
   lapply(function(x)
   x %>%
@@ -146,3 +149,4 @@ res_plot %>%
     )
 
 dev.off()
+
