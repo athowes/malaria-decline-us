@@ -6,6 +6,7 @@ artefacts:
       filenames:
         - smoothed-estimates.csv
         - smoothed-estimates.pdf
+        - time-series.pdf
 
 packages:
   - dplyr

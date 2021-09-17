@@ -150,3 +150,20 @@ res_plot %>%
 
 dev.off()
 
+pdf("time-series.pdf", h = 5, w = 8.5)
+
+res_plot %>%
+  filter(source %in% c("raw", "est")) %>%
+  mutate(
+    source = fct_recode(source,
+                        "Raw data" = "raw",
+                        "Posterior mean" = "est"
+    ),
+    log_malrat = log(malrat)
+  ) %>%
+  ggplot(aes(x = year, y = log_malrat, group = county, col = state)) +
+    geom_jitter(alpha = 0.4) +
+    facet_wrap(~ source, ncol = 1) +
+    labs(x = "Year", y = "log(Malaria rate)", col = "State")
+
+dev.off()
