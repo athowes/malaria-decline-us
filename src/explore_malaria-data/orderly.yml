@@ -13,6 +13,10 @@ artefacts:
       description: Categorical and numeric mortality data from 1930
       filenames:
         - clorpleth-1930.pdf
+  - data:
+      description: Categorical (for below 10) and numeric mortality data from 1921
+      filenames:
+        - clorpleth-1921.pdf
 
 packages:
   - dplyr

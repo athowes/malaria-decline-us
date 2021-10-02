@@ -171,3 +171,32 @@ b <- ggplot(df_Y30, aes(fill = malrat30)) +
 cowplot::plot_grid(a, b, ncol = 1)
 
 dev.off()
+
+#' Analysis of the 1921 data
+df_Y21 <- usa_data %>%
+  select(state, county, malrat1921) %>%
+  mutate(malrat1921_edit = ifelse(malrat1921 == "<10", 5, as.numeric(malrat1921))) %>%
+  left_join(
+    areas,
+    by = c("state" = "NAME_1", "county" = "NAME_2")
+  ) %>%
+  relocate(geometry, .after = last_col()) %>%
+  st_as_sf()
+
+#' There are no missing values in malrat1921
+df_Y21$malrat1921 %>% is.na() %>% sum()
+df_Y21$malrat1921_edit %>% is.na() %>% sum()
+
+pdf("cloropleth-1921.pdf", h = 5, w = 8)
+
+ggplot(df_Y21, aes(fill = malrat1921_edit)) +
+  geom_sf(size = 0.1) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "bold"),
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom",
+    legend.key.width = unit(4, "lines")
+  )
+
+dev.off()
