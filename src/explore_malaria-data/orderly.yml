@@ -9,6 +9,10 @@ artefacts:
       description: Categorical mortality data from 1933-1937
       filenames:
         - clorpleth-1933-to-1937.pdf
+  - data:
+      description: Categorical and numeric mortality data from 1930
+      filenames:
+        - clorpleth-1930.pdf
 
 packages:
   - dplyr
@@ -19,6 +23,7 @@ packages:
   - spdep
   - tidyr
   - readxl
+  - cowplot
 
 global_resources:
   depends/usa_data_july2021.xlsx: USA data July 2021.xlsx

@@ -1,5 +1,5 @@
-# orderly::orderly_develop_start("process_malaria-data")
-# setwd("src/process_malaria-data")
+# orderly::orderly_develop_start("explore_malaria-data")
+# setwd("src/explore_malaria-data")
 
 #' U.S.A. Malaria mortality 1920-1940
 #'
@@ -106,5 +106,68 @@ ggplot(df_Y3337, aes(fill = malratcat)) +
     legend.position = "bottom",
     legend.key.width = unit(4, "lines")
   )
+
+dev.off()
+
+#' Analysis of the data from 1930
+df_Y30 <- usa_data %>%
+  select(state, county, malrat30, malratcat30) %>%
+  left_join(
+    areas,
+    by = c("state" = "NAME_1", "county" = "NAME_2")
+  ) %>%
+  relocate(geometry, .after = last_col()) %>%
+  st_as_sf()
+
+#' Is there overlap in the malrat30 and malratcat30 data?
+check_overlap <- df_Y30 %>%
+  mutate(
+    na_malrat30 = is.na(malrat30),
+    na_malratcat30 = is.na(malratcat30),
+    na_both = na_malrat30 & na_malratcat30,
+    na_one = xor(na_malrat30, na_malratcat30),
+    na_zero = !na_malrat30 & !na_malratcat30
+  )
+
+#' # A tibble: 1 x 4
+#' total na_both na_one na_zero
+#' <int>   <int>  <int>   <int>
+#' 1227       0   1178      49
+check_overlap %>%
+  summarise(
+    total = n(),
+    na_both = sum(na_both),
+    na_one = sum(na_one),
+    na_zero = sum(na_zero)
+  )
+
+#' Does look like all the overlapping ones agree
+check_overlap %>%
+  filter(na_zero == TRUE) %>%
+  print(n = 49)
+
+pdf("clorpleth-1930.pdf", h = 5, w = 8)
+
+a <- ggplot(df_Y30, aes(fill = malratcat30)) +
+  geom_sf(size = 0.1) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "bold"),
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom",
+    legend.key.width = unit(4, "lines")
+  )
+
+b <- ggplot(df_Y30, aes(fill = malrat30)) +
+  geom_sf(size = 0.1) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "bold"),
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom",
+    legend.key.width = unit(4, "lines")
+  )
+
+cowplot::plot_grid(a, b, ncol = 1)
 
 dev.off()
