@@ -19,16 +19,18 @@ df <- usa_data %>%
 df_weather <- df %>%
   #' TODO: Decide what to do with these diff columns
   select(-contains("dif")) %>%
+  #' Just going to go with the middle value for now
+  #' TODO: Better solution for this
   rename(
-    "temp_mean19191921" = "temp_191921mean",
+    "temp_mean19191921" = "temp_1920mean",
     "temp_mean1930" = "temp_1930mean",
-    "temp_mean19381942" = "temp_193842mean",
-    "prec_mean19191921" = "prec_191921mean",
+    "temp_mean19381942" = "temp_1940mean",
+    "prec_mean19191921" = "prec_1920mean",
     "prec_mean1930" = "prec_1930mean",
-    "prec_mean19301942" = "prec_193842mean",
-    "fdf_mean19191921" = "fdf_191921mean",
+    "prec_mean19301942" = "prec_1940mean",
+    "fdf_mean19191921" = "fdf_1920mean",
     "fdf_mean1930" = "fdf_1930mean",
-    "fdf_mean19381942" = "fdf_193842mean"
+    "fdf_mean19381942" = "fdf_1940mean"
   ) %>%
   pivot_longer(
     cols = c(-state, -county),
