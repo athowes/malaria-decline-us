@@ -7,6 +7,8 @@ artefacts:
         - smoothed-estimates.csv
         - smoothed-estimates.pdf
         - time-series.pdf
+        - time-series-state.pdf
+        - time-series-state-predictions.pdf
 
 packages:
   - dplyr

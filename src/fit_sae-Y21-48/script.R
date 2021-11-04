@@ -66,7 +66,10 @@ df <- crossing(
     st_drop_geometry() %>%
     select(state, county, area_idx)
 ) %>%
-  mutate(time_idx = to_int(year))
+  mutate(
+    time_idx = to_int(year),
+    state_idx = to_int(state)
+  )
 
 #' Add malrat observations from 1921, 1930, 1933-1937, 1940 and 1945-1948
 df <- df %>%
@@ -165,8 +168,8 @@ res_plot %>%
   filter(source %in% c("raw", "est")) %>%
   mutate(
     source = fct_recode(source,
-                        "Raw data" = "raw",
-                        "Posterior mean" = "est"
+      "Raw data" = "raw",
+      "Posterior mean" = "est"
     ),
     log_malrat = log(malrat)
   ) %>%
@@ -174,5 +177,44 @@ res_plot %>%
     geom_jitter(alpha = 0.4) +
     facet_wrap(~ source, ncol = 1) +
     labs(x = "Year", y = "log(Malaria rate)", col = "State")
+
+dev.off()
+
+pdf("time-series-state.pdf", h = 5, w = 8.5)
+
+res_plot %>%
+  filter(source %in% c("raw", "est")) %>%
+  mutate(
+    source = fct_recode(source,
+      "Raw data" = "raw",
+      "Posterior mean" = "est"
+    )
+  ) %>%
+  group_by(year, state, source) %>%
+  summarise(malrat_mean = mean(malrat, na.rm = TRUE)) %>%
+  ggplot(aes(x = year, y = malrat_mean, col = state, group = state)) +
+    geom_point() +
+    facet_wrap(~source) +
+    labs(x = "Year", y = "Malaria rate", col = "State")
+
+dev.off()
+
+pdf("time-series-state-predictions.pdf", h = 5, w = 8.5)
+
+res_df %>%
+  group_by(year, state) %>%
+  summarise(
+    malrat_est = mean(malrat_est, na.rm = TRUE),
+    malrat_lower = mean(malrat_lower, na.rm = TRUE),
+    malrat_upper = mean(malrat_upper, na.rm = TRUE)
+  ) %>%
+  split(.$state) %>%
+  lapply(function(x) {
+  x %>%
+    ggplot() +
+    geom_ribbon(aes(x = year, ymin = malrat_lower, ymax = malrat_upper), alpha = 0.5) +
+    geom_line(aes(x = year, y = malrat_est), linetype = "dashed") +
+    labs(x = "Year", y = "Malaria rate", title = paste0(x$state[1]))
+  })
 
 dev.off()
