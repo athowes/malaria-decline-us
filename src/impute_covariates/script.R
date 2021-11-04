@@ -28,4 +28,13 @@ df_merged <- reduce(append(list(df), covariates), left_join)
 
 write_csv(df_merged, "all-processed-covariates.csv")
 
+#' Examine the extent of the missingness
+colMeans(is.na(df_merged))
+
+pdf("missing-data.pdf", h = 13, w = 20)
+
+visdat::vis_miss(df_merged, warn_large_data = FALSE)
+
+dev.off()
+
 #' TODO: Create all-processed-covariates-imputed.csv

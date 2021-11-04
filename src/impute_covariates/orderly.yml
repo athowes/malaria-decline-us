@@ -5,6 +5,9 @@ artefacts:
       description: All of the processed covariates together
       filenames:
         - all-processed-covariates.csv
+      description: Visualisation of the missingness
+      filenames:
+        - missing-data.pdf
       description: All of the processed covariates together, with imputation of missingness
       filenames:
         - all-processed-covariates-imputed.csv
@@ -22,6 +25,7 @@ packages:
   - spdep
   - tidyr
   - readxl
+  - visdat
 
 depends:
   data_areas:
