@@ -27,7 +27,9 @@ df_urbanisation <- df %>%
     names_pattern = "(\\D+)([0-9]+$)"
   ) %>%
   mutate(
-    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
+    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .)),
+    #' usurbanpop of zero is not plausible
+    usurbanpop = ifelse(usurbanpop == 0, NA, usurbanpop)
   )
 
 write_csv(df_urbanisation, "processed-covariates.csv", na = "")
