@@ -24,7 +24,8 @@ df <- crossing(
 covariates <- covariates[-1]
 
 #' Multiple left_join
-df_merged <- reduce(append(list(df), covariates), left_join)
+df_merged <- reduce(append(list(df), covariates), left_join) %>%
+  as.data.frame()
 
 write_csv(df_merged, "all-processed-covariates.csv")
 
@@ -37,4 +38,20 @@ visdat::vis_miss(df_merged, warn_large_data = FALSE)
 
 dev.off()
 
-#' TODO: Create all-processed-covariates-imputed.csv
+#' Try to impute the missingness
+df_imputed <- df_merged %>%
+  mutate(
+    year = as.numeric(year),
+    state = as.factor(state),
+    #' Can not handle categorical predictors with more than 53 categories!
+    #' This is sad as presumably the county information is going to be useful for imputation
+    #' Started looking for workarounds, don't mind if this step takes a lot of computation
+    #' One option is to do the imputation separately by state, then maybe no state has that many counties (?)
+    #' https://stats.stackexchange.com/questions/157331/random-forest-predictors-have-more-than-53-categories
+    county = as.factor(county)
+  ) %>%
+  select(-county) %>%
+  missForest::missForest()
+
+write_csv(df_imputed, "all-processed-covariates-imputed.csv")
+
