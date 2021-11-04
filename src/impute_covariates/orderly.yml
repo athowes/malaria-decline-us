@@ -5,9 +5,11 @@ artefacts:
       description: All of the processed covariates together
       filenames:
         - all-processed-covariates.csv
+  - data:
       description: Visualisation of the missingness
       filenames:
         - missing-data.pdf
+  - data:
       description: All of the processed covariates together, with imputation of missingness
       filenames:
         - all-processed-covariates-imputed.csv
