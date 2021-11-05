@@ -89,10 +89,19 @@ df <- df %>%
 #' Get imputed covariates
 missforest_results <- readRDS("depends/all-processed-covariates-imputed.rds")
 
+normalise <- function(x) {
+  (x - mean(x)) / sd(x)
+}
+
 covariates <- missforest_results$ximp %>%
   mutate(
     county = df$county, #' Assume that there hasn't been any shuffling of the rows! This is a big dangerous
-    year = year %% 100 #' Issue here with using year as xx on this script and 19xx elsewhere!
+    year = year %% 100, #' Issue here with using year as xx on this script and 19xx elsewhere!
+    .after = state
+  ) %>%
+  mutate(
+    #' Normalise all of the covariates!
+    across(nhgisfarmcattle:fdf_mean, normalise)
   )
 
 df <- left_join(df, covariates, by = c("state", "county", "year"))
