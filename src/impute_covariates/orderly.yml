@@ -12,7 +12,7 @@ artefacts:
   - data:
       description: All of the processed covariates together, with imputation of missingness
       filenames:
-        - all-processed-covariates-imputed.csv
+        - all-processed-covariates-imputed.rds
 
 packages:
   - dplyr

@@ -53,4 +53,4 @@ df_imputed <- df_merged %>%
   select(-county) %>%
   missForest::missForest()
 
-write_csv(df_imputed, "all-processed-covariates-imputed.csv")
+saveRDS(df_imputed, "all-processed-covariates-imputed.rds")
