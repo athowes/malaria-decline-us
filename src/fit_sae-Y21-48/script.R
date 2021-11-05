@@ -86,15 +86,45 @@ df <- df %>%
     by = c("state", "county", "year")
   )
 
+#' Get imputed covariates
+missforest_results <- readRDS("depends/all-processed-covariates-imputed.rds")
+covariates <- missforest_results$ximp
+
+#' Assume that there hasn't been any shuffling of the rows! This is a big dangerous
+covariates$county <- df$county
+
+df <- left_join(df, covariates, by = c("state", "county", "year"))
+
+#' Checking that df has the right number of columns now (i.e. that the covariates have been included)
+dim(df)
+
 #' Penalised complexity precision prior
 tau_pc <- function(x = 0.001, u = 2.5, alpha = 0.01) {
   list(prec = list(prec = "pc.prec", param = c(u, alpha), initial = log(x)))
 }
 
-#' Create INLA formula, Besag on space and AR1 on time, no covariates
-formula <- malrat_raw ~ 1 +
-  f(area_idx, model = "besag", graph = adjM, scale.model = TRUE, constr = TRUE, hyper = tau_pc()) +
-  f(time_idx, model = "ar1", constr = TRUE, hyper = tau_pc())
+#' Create INLA formula
+
+#' Covariate effects
+formula_covariates <- covariates %>%
+  select(-year, -state, -county) %>%
+  names() %>%
+  paste(collapse = " + ")
+
+#' Besag on space
+formula_spatial <- ' + f(area_idx, model = "besag", graph = adjM, scale.model = TRUE, constr = TRUE, hyper = tau_pc())'
+
+#' AR1 on time
+formula_temporal <- ' + f(time_idx, model = "ar1", constr = TRUE, hyper = tau_pc())'
+
+formula <- stats::as.formula(
+  paste(
+    "malrat_raw ~ 1 +", #' Include an intercept
+    formula_covariates,
+    formula_spatial,
+    formula_temporal
+  )
+)
 
 fit <- inla(
   formula,
@@ -103,6 +133,10 @@ fit <- inla(
   control.predictor = list(link = 1),
   control.compute = list(dic = TRUE, waic = TRUE, cpo = TRUE, config = TRUE)
 )
+
+#' Save the fitted model object and df used to produce it
+saveRDS(fit, "fit.rds")
+saveRDS(df, "df.rds")
 
 #' Add fitted model to df
 res_df <- df %>%
