@@ -1,0 +1,28 @@
+script: script.R
+
+artefacts:
+  - data:
+      description: How important are each of the covariates?
+      filenames:
+        - covariate-importance.csv
+        - covariate-imporance.pdf
+
+
+packages:
+  - dplyr
+  - forcats
+  - ggplot2
+  - INLA
+  - naomi
+  - readr
+  - scales
+  - sf
+  - spdep
+  - tidyr
+  - readxl
+
+depends:
+  fit_sae-Y21-48:
+    id: latest
+    use:
+      depends/fit.rds: fit.rds
