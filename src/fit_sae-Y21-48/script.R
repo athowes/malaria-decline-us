@@ -88,15 +88,20 @@ df <- df %>%
 
 #' Get imputed covariates
 missforest_results <- readRDS("depends/all-processed-covariates-imputed.rds")
-covariates <- missforest_results$ximp
 
-#' Assume that there hasn't been any shuffling of the rows! This is a big dangerous
-covariates$county <- df$county
+covariates <- missforest_results$ximp %>%
+  mutate(
+    county = df$county, #' Assume that there hasn't been any shuffling of the rows! This is a big dangerous
+    year = year %% 100 #' Issue here with using year as xx on this script and 19xx elsewhere!
+  )
 
 df <- left_join(df, covariates, by = c("state", "county", "year"))
 
 #' Checking that df has the right number of columns now (i.e. that the covariates have been included)
 dim(df)
+
+#' And that there are no missing values
+colSums(is.na(df))
 
 #' Penalised complexity precision prior
 tau_pc <- function(x = 0.001, u = 2.5, alpha = 0.01) {
