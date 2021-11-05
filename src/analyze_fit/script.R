@@ -3,3 +3,9 @@
 
 #' Get fitted model
 fit <- readRDS("depends/fit.rds")
+
+#' Get data used to fit model
+df <- readRDS("depends/df.rds")
+
+summary(fit)
+fit$summary.fixed
