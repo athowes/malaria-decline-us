@@ -38,6 +38,25 @@ visdat::vis_miss(df_merged, warn_large_data = FALSE)
 
 dev.off()
 
+#' Time series plots of each of the covariates aggregated by state, before imputation
+pdf("covariate-time-series-raw.pdf", h = 5, w = 6.5)
+
+df_merged %>%
+  select(-year, -state, -county) %>%
+  names() %>%
+  lapply(function(x)
+    df_merged %>%
+      select("year", "state", "county", x) %>%
+      rename(var = x) %>%
+      group_by(state, year) %>%
+      summarise(var = mean(var, na.rm = TRUE)) %>%
+      ggplot(aes(x = year, y = var, col = state)) +
+      geom_point() +
+      labs(x = "Year", y = "Covariate", col = "State", title = x)
+  )
+
+dev.off()
+
 #' Try to impute the missingness
 df_imputed <- df_merged %>%
   mutate(
@@ -54,3 +73,22 @@ df_imputed <- df_merged %>%
   missForest::missForest()
 
 saveRDS(df_imputed, "all-processed-covariates-imputed.rds")
+
+#' Time series plots of each of the covariates aggregated by state
+pdf("covariate-time-series-imputed.pdf", h = 5, w = 6.5)
+
+df_imputed$ximp %>%
+  select(-year, -state) %>%
+  names() %>%
+  lapply(function(x)
+    df_imputed$ximp %>%
+      select("year", "state", x) %>%
+      rename(var = x) %>%
+      group_by(state, year) %>%
+      summarise(var = mean(var, na.rm = TRUE)) %>%
+      ggplot(aes(x = year, y = var, col = state)) +
+      geom_line() +
+      labs(x = "Year", y = "Covariate", col = "State", title = x)
+  )
+
+dev.off()

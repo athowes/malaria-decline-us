@@ -13,6 +13,11 @@ artefacts:
       description: All of the processed covariates together, with imputation of missingness
       filenames:
         - all-processed-covariates-imputed.rds
+  - data:
+      description: Univariate plots of the covariates, before and after imputation
+      filenames:
+        - covariate-time-series-raw.pdf
+        - covariate-time-series-imputed.pdf
 
 packages:
   - dplyr
