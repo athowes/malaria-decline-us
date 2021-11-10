@@ -7,7 +7,6 @@ artefacts:
         - covariate-importance.csv
         - covariate-imporance.pdf
 
-
 packages:
   - dplyr
   - forcats
