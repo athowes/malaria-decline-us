@@ -20,4 +20,4 @@ packages:
   - readxl
 
 global_resources:
-  depends/usa_data_july2021.xlsx: USA data July 2021.xlsx
+  depends/malariadata.csv: malariadata.csv

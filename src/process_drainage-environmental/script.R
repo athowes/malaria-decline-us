@@ -1,7 +1,15 @@
 # orderly::orderly_develop_start("process_drainage-environmental")
 # setwd("src/process_drainage-environmental")
 
-usa_data <- read_excel("depends/usa_data_july2021.xlsx")
+usa_data <- read_csv("depends/malariadata.csv")
+
+#' Drainage
+#' * drain20, 30, 40, 50: (ICSPR)	Acres of land in drainage enterprises
+#' * improved20, 30, 40, 50:	(ICSPR)	Acres of land in drainage enterprises with goal of "improvement" (alternative to drain)
+#' * ditch20, 30, 40, 50:	(ICSPR + ag1950)	Miles of ditches
+#' * tile20, 30, 40, 50: (ICSPR + ag1950)	Miles of tile drains
+#' * levee20, 30, 40, 50: (ICSPR + ag1950) Miles of levees or dikes
+#' * draincost20, 30, 40, 45, 50:	(ICSPR + 1945+1950 from ag1950)	Capital ($) invested in drainage enterprises since prior survey
 
 #' Y: Mentioned in data dictionary and found
 #' ?: Not mentioned in data dictionary and found
@@ -13,27 +21,18 @@ df <- usa_data %>%
     county,
     starts_with("drain"),    #' Y
     starts_with("improved"), #' Y
-    starts_with("irrigate")  #' Y
+    starts_with("ditch"), #' Y
+    starts_with("levee"), #' Y
+    starts_with("draincost")  #' Y
   )
 
 names(df)
 
-#' drainpr can be mutated using drain / countyarea_acres
-#' improvepr can be mutated using improved / countyarea_acres
-#' irrigatepr can be mutated using irrigate / countyarea_acres
-
 df_drainage_environmental <- df %>%
-  #' Numbers at the end of drained are year ranges, not years: for now just ignore
-  #' TODO: Think of approach to deal with this
-  #' There is no number after drainagelevel
-  select(-c(starts_with("drained"), "drainagelevel")) %>%
   pivot_longer(
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
-  ) %>%
-  mutate(
-    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
   )
 
 write_csv(df_drainage_environmental, "processed-covariates.csv", na = "")
