@@ -47,6 +47,10 @@ depends:
     id: latest
     use:
       depends/processed-covariates_animals.csv: processed-covariates.csv
+  process_county-characteristics:
+    id: latest
+    use:
+      depends/processed-covariates_urbanisation.csv: processed-covariates.csv
   process_drainage-environmental:
     id: latest
     use:
@@ -63,10 +67,6 @@ depends:
     id: latest
     use:
       depends/processed-covariates_ses.csv: processed-covariates.csv
-  process_urbanisation:
-    id: latest
-    use:
-      depends/processed-covariates_urbanisation.csv: processed-covariates.csv
   process_weather:
     id: latest
     use:
