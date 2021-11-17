@@ -8,6 +8,8 @@ usa_data <- read_csv("depends/malariadata.csv")
 #' * infdeaths1920-1941: (NHGIS) Number all cause deaths in infants <1 yr old by place of occurrence
 #' * infdeaths1942-1950: (NHGIS) Number all cause deaths in infants <1 yr old by place of residence
 
+#' All structured as 19xx
+
 #' Y: Mentioned in data dictionary and found
 #' ?: Not mentioned in data dictionary and found
 #' N: Mentioned in data dictionary and not found
@@ -27,6 +29,9 @@ df_all_cause_mortality <- df %>%
     cols = c(-county, -state),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    year = as.numeric(year)
   )
 
 write_csv(df_all_cause_mortality, "processed-covariates.csv", na = "")

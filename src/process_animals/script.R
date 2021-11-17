@@ -30,6 +30,9 @@ df_animals <- df %>%
     cols = c(-county, -state),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    year = as.numeric(year) + 1900
   )
 
 write_csv(df_animals, "processed-covariates.csv", na = "")

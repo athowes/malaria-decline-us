@@ -19,11 +19,11 @@ df <- usa_data %>%
   select(
     state,
     county,
-    starts_with("drain"),    #' Y
+    starts_with("drain"), #' Y
     starts_with("improved"), #' Y
     starts_with("ditch"), #' Y
     starts_with("levee"), #' Y
-    starts_with("draincost")  #' Y
+    starts_with("draincost") #' Y
   )
 
 names(df)
@@ -33,6 +33,9 @@ df_drainage_environmental <- df %>%
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    year = as.numeric(year) + 1900
   )
 
 write_csv(df_drainage_environmental, "processed-covariates.csv", na = "")

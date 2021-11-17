@@ -1,5 +1,5 @@
-orderly::orderly_develop_start("process_weather")
-setwd("src/process_weather")
+# orderly::orderly_develop_start("process_weather")
+# setwd("src/process_weather")
 
 usa_data <- read_csv("depends/malariadata.csv")
 
@@ -21,6 +21,8 @@ df <- usa_data %>%
     starts_with("fdf")   #' Y
   )
 
+names(df)
+
 df_weather <- df %>%
   #' Just going to go with the middle value for now
   #' TODO: Is there a better solution for this?
@@ -39,6 +41,9 @@ df_weather <- df %>%
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    year = as.numeric(year)
   )
 
 write_csv(df_weather, "processed-covariates.csv", na = "")

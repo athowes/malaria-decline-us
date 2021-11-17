@@ -34,10 +34,22 @@ df <- usa_data %>%
 names(df)
 
 df_ses <- df %>%
+  rename(
+    farmval20 = farmval1920,
+    farmval25 = farmval1925,
+    farmval30 = farmval1930,
+    farmval35 = farmval1935,
+    farmval40 = farmval1940,
+    farmval45 = farmval1945,
+    farmval50 = farmval1950,
+  ) %>%
   pivot_longer(
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    year = as.numeric(year) + 1900
   )
 
 write_csv(df_ses, "processed-covariates.csv", na = "")

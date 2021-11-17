@@ -25,10 +25,18 @@ df <- usa_data %>%
 names(df)
 
 df_people <- df %>%
+  rename(
+    popdens1920 = popdens20,
+    popdens1930 = popdens30,
+    popdens1940 = popdens40
+  ) %>%
   pivot_longer(
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    year = as.numeric(year)
   )
 
 write_csv(df_people, "processed-covariates.csv", na = "")

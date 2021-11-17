@@ -32,6 +32,9 @@ df_farm_landcover <- df %>%
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
+  ) %>%
+  mutate(
+    year = as.numeric(year) + 1900
   )
 
 write_csv(df_farm_landcover, "processed-covariates.csv", na = "")

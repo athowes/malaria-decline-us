@@ -11,6 +11,8 @@ usa_data <- read_csv("depends/malariadata.csv")
 #' * mean_dist_inland_water_m: (Alex)	Distance from inland water
 #' * mean_dist_waterway_m: (Alex)	Distance from waterway
 
+#' No year information!
+
 #' Y: Mentioned in data dictionary and found
 #' ?: Not mentioned in data dictionary and found
 #' N: Mentioned in data dictionary and not found
