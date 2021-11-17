@@ -1,5 +1,5 @@
-# orderly::orderly_develop_start("process_country-characteristics")
-# setwd("process_country-characteristics")
+# orderly::orderly_develop_start("process_county-characteristics")
+# setwd("process_county-characteristics")
 
 usa_data <- read_csv("depends/malariadata.csv")
 
