@@ -1,7 +1,13 @@
 # orderly::orderly_develop_start("process_people")
 # setwd("src/process_people")
 
-usa_data <- read_excel("depends/usa_data_july2021.xlsx")
+usa_data <- read_csv("depends/malariadata.csv")
+
+#' Demographics
+#' * pop1920, 30, 40, 50:	(NHGIS) Census populations
+#' * popdens20, 30, 40:	(NHGIS) People per square mile (we could recalc this & include 1950)
+#' * urb1920, 30, 40, 50:	(NHGIS) Urban population
+#' * births1920-1950:	(NHGIS) Number births by place of occurrence
 
 #' Y: Mentioned in data dictionary and found
 #' ?: Not mentioned in data dictionary and found
@@ -11,8 +17,9 @@ df <- usa_data %>%
   select(
     state,
     county,
-    starts_with("uspop"),       #' Y
-    starts_with("uspopdensity") #' N
+    starts_with("pop"), #' Y
+    starts_with("popdens"), #' Y
+    starts_with("births"), #' Y
   )
 
 names(df)
@@ -22,9 +29,6 @@ df_people <- df %>%
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
-  ) %>%
-  mutate(
-    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
   )
 
 write_csv(df_people, "processed-covariates.csv", na = "")

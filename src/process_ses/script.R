@@ -1,7 +1,17 @@
 # orderly::orderly_develop_start("process_ses")
 # setwd("src/process_ses")
 
-usa_data <- read_excel("depends/usa_data_july2021.xlsx")
+usa_data <- read_csv("depends/malariadata.csv")
+
+#' Socioeconomic status
+#' * waterPipe30: (ICSPR)	Fraction of farms with piped water at home in 1930
+#' * phone30, 50: (ICSPR)	Fraction of farms with a telephone in 1930 & 1950
+#' * electric30, 40, 50: (ICSPR) Fraction of farms with electricity
+#' * roadPaved25, 30, 40, 50: (ICSPR) Fraction of farms on paved roads
+#' * schoolM40, schoolF40, school50: (NHGIS)	Median school years completed by pop >25 yrs, male and female in 1940; categorical for both in 1950
+#' * bvalue1920, 30, 40: (ICSPR) Value of buildings on farms ($ not adjusted for inflation)
+#' * farmval1920, 25, 30, 35, 40, 45, 50:	(NHGIS)	Average value of farmland & buildings per acre
+#' * nhgisradio30, 40: (NHGIS) Percent of households with radio
 
 #' Y: Mentioned in data dictionary and found
 #' ?: Not mentioned in data dictionary and found
@@ -11,28 +21,23 @@ df <- usa_data %>%
   select(
     state,
     county,
-    starts_with("nhgisfarmvalue"),   #' Y
-    starts_with("nhgisradio"),       #' Y
-    starts_with("electric"),         #' Y
-    starts_with("valuebuilding"),    #' Y
-    starts_with("valuebuildingadj"), #' Y
-    starts_with("roadpaved"),        #' Y
-    starts_with("roadunpaved")       #' Y
+    starts_with("waterPipe"), #' Y
+    starts_with("phone"), #' Y
+    starts_with("electric"), #' Y
+    starts_with("roadPaved"), #' Y
+    starts_with("school"), #' Y
+    starts_with("bvalue"), #' Y
+    starts_with("farmval"), #' Y
+    starts_with("nhgisradio") #' Y
   )
 
 names(df)
-
-#' elecpr can be mutated using electric / nhgistotalfarm
-#' pavedpr can be mutated using roadpaved / nhgistotalfarm
 
 df_ses <- df %>%
   pivot_longer(
     cols = c(-state, -county),
     names_to = c(".value", "year"),
     names_pattern = "(\\D+)([0-9]+$)"
-  ) %>%
-  mutate(
-    across(c(-state, -county, -year), ~ ifelse(. == -99999, NA, .))
   )
 
 write_csv(df_ses, "processed-covariates.csv", na = "")
