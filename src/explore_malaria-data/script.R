@@ -1,7 +1,7 @@
 # orderly::orderly_develop_start("explore_malaria-data")
 # setwd("src/explore_malaria-data")
 
-#' U.S.A. Malaria mortality 1920-1940
+#' U.S.A. Malaria mortality 1920-1950
 #'
 #' All codes in here are from NHGIS/IMPUMS.
 #' The columns of the data are:
@@ -19,7 +19,7 @@
 #' * malrat19-21: average annual malaria mortality per 100,000 over 1919-1921. Only values for 10 or greater were given, so all others should be <10 though possible some are actually just missing.
 #' * pop1900-pop1960: decadal (by decade) population numbers
 
-usa_data <- read_excel("depends/usa_data_july2021.xlsx")
+usa_data <- read_csv("depends/malariadata.csv")
 areas <- read_sf("depends/southern13_areas.geojson")
 
 df <- usa_data %>%
@@ -28,24 +28,24 @@ df <- usa_data %>%
   #' TODO: Impute something better than uspop1940
   #' Really 1950 is closer, I could just use linear interpolation
   mutate(
-    malrat45 = 100000 * maldths45 / uspop1940,
-    malrat46 = 100000 * maldths46 / uspop1940,
-    malrat47 = 100000 * maldths47 / uspop1940,
-    malrat48 = 100000 * maldths48 / uspop1940
+    malrat45 = 100000 * maldths45 / pop1940,
+    malrat46 = 100000 * maldths46 / pop1940,
+    malrat47 = 100000 * maldths47 / pop1940,
+    malrat48 = 100000 * maldths48 / pop1940
   ) %>%
   select(-maldths45, -maldths46, -maldths47, -maldths48) %>%
   #' Malaria deaths for 1939 and 1940 are combined
   #' Suggest to divide by two for comparability with other single years
   #' I'll just call this 1940 (even though it's an average of 1939 and 1940)
   mutate(
-   malrat40 = 100000 * (maldths3940 / 2) / uspop1940
+   malrat40 = 100000 * (`maldths39&40` / 2) / pop1940
   ) %>%
-  select(-maldths3940)
+  select(-`maldths39&40`)
 
 #' 1940-1948: numeric data is available
 #' Data from government Vital Statistics reports
 df_Y4048 <- df %>%
-  select(-malratcat3337, -malratcat30, -malrat30, -malrat1921) %>%
+  select(-`malratcat33-37`, -malratcat30, -malrat30, -`malrat19-21`) %>%
   pivot_longer(
     cols = starts_with("malrat4"),
     names_to = "year",
@@ -80,7 +80,7 @@ dev.off()
 #' 1933-1937: categorical data is available
 #' Data from Faust (1939)
 df_Y3337 <- df %>%
-  select(state, county, malratcat3337) %>%
+  select(state, county, `malratcat33-37`) %>%
   pivot_longer(
     cols = starts_with("malratcat"),
     names_to = "year",
@@ -174,8 +174,8 @@ dev.off()
 
 #' Analysis of the 1921 data
 df_Y21 <- usa_data %>%
-  select(state, county, malrat1921) %>%
-  mutate(malrat1921_edit = ifelse(malrat1921 == "<10", 5, as.numeric(malrat1921))) %>%
+  select(state, county, `malrat19-21`) %>%
+  mutate(`malrat19-21_edit` = ifelse(`malrat19-21` == "<10", 5, as.numeric(`malrat19-21`))) %>%
   left_join(
     areas,
     by = c("state" = "NAME_1", "county" = "NAME_2")
@@ -184,12 +184,12 @@ df_Y21 <- usa_data %>%
   st_as_sf()
 
 #' There are no missing values in malrat1921
-df_Y21$malrat1921 %>% is.na() %>% sum()
-df_Y21$malrat1921_edit %>% is.na() %>% sum()
+df_Y21$`malrat19-21` %>% is.na() %>% sum()
+df_Y21$`malrat19-21_edit` %>% is.na() %>% sum()
 
 pdf("cloropleth-1921.pdf", h = 5, w = 8)
 
-ggplot(df_Y21, aes(fill = malrat1921_edit)) +
+ggplot(df_Y21, aes(fill = `malrat19-21_edit`)) +
   geom_sf(size = 0.1) +
   theme_minimal() +
   theme(

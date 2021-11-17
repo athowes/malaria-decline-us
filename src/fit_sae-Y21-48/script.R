@@ -1,29 +1,29 @@
 # orderly::orderly_develop_start("fit_sae-Y21-48")
 # setwd("src/fit_sae-Y21-48")
 
-usa_data <- read_excel("depends/usa_data_july2021.xlsx")
+usa_data <- read_csv("depends/malariadata.csv")
 areas <- read_sf("depends/southern13_areas.geojson")
 
 usa_data <- usa_data %>%
   mutate(
-    malrat45 = 100000 * maldths45 / uspop1940,
-    malrat46 = 100000 * maldths46 / uspop1940,
-    malrat47 = 100000 * maldths47 / uspop1940,
-    malrat48 = 100000 * maldths48 / uspop1940
+    malrat45 = 100000 * maldths45 / pop1940,
+    malrat46 = 100000 * maldths46 / pop1940,
+    malrat47 = 100000 * maldths47 / pop1940,
+    malrat48 = 100000 * maldths48 / pop1940
   ) %>%
   select(-maldths45, -maldths46, -maldths47, -maldths48) %>%
   mutate(
-    malrat40 = 100000 * (maldths3940 / 2) / uspop1940
+    malrat40 = 100000 * (`maldths39&40` / 2) / pop1940
   ) %>%
-  select(-maldths3940) %>%
+  select(-`maldths39&40`) %>%
   mutate(
     #' Guessing these numbers
     #' Better attempt? src/impute_numeric-Y33-37
     malrat33 = dplyr::case_when(
-      (malratcat3337 == "0") ~ 0,
-      (malratcat3337 == "<25") ~ 12.5,
-      (malratcat3337 == "25-49.9") ~ 37.5,
-      (malratcat3337 == "50+") ~ 65,
+      (`malratcat33-37` == "0") ~ 0,
+      (`malratcat33-37` == "<25") ~ 12.5,
+      (`malratcat33-37` == "25-49.9") ~ 37.5,
+      (`malratcat33-37` == "50+") ~ 65,
       TRUE ~ NA_real_
     ),
     malrat34 = malrat33,
@@ -38,9 +38,9 @@ usa_data <- usa_data %>%
       (malratcat30 == ">200") ~ 250,
       TRUE ~ NA_real_
     ), malrat30),
-    malrat21 = ifelse(malrat1921 == "<10", 5, malrat1921) %>% as.numeric()
+    malrat20 = ifelse(`malrat19-21` == "<10", 5, `malrat19-21`) %>% as.numeric()
   ) %>%
-  select(-malratcat3337, -malratcat30, - malrat1921)
+  select(-`malratcat33-37`, -malratcat30, -`malrat19-21`)
 
 #' Using all the areas in the model
 areas_model <- areas %>%
@@ -61,7 +61,7 @@ to_int <- function(x) as.numeric(as.factor(x))
 #' Create scaffolding for estimates
 df <- crossing(
   #' We only have data for some of these years, but want to predict the others, 40 is 1940 etc.
-  year = 21:48,
+  year = 20:48,
   areas_model %>%
     st_drop_geometry() %>%
     select(state, county, area_idx)
@@ -71,7 +71,7 @@ df <- crossing(
     state_idx = to_int(state)
   )
 
-#' Add malrat observations from 1921, 1930, 1933-1937, 1940 and 1945-1948
+#' Add malrat observations from 1920, 1930, 1933-1937, 1940 and 1945-1948
 df <- df %>%
   left_join(
     usa_data %>%

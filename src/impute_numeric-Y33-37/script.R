@@ -1,7 +1,7 @@
 # orderly::orderly_develop_start("impute_numeric-Y33-37")
 # setwd("src/impute_numeric-Y33-37")
 
-usa_data <- read_excel("depends/usa_data_july2021.xlsx")
+usa_data <- read_csv("depends/malariadata.csv")
 
 fit_impute <- inla(
   formula = y ~ 1,
