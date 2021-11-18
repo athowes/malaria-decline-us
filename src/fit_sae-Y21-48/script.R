@@ -40,7 +40,8 @@ usa_data <- usa_data %>%
     ), malrat30),
     malrat20 = ifelse(`malrat19-21` == "<10", 5, `malrat19-21`) %>% as.numeric()
   ) %>%
-  select(-`malratcat33-37`, -malratcat30, -`malrat19-21`)
+  select(-`malratcat33-37`, -malratcat30, -`malrat19-21`) %>%
+  select(gisjoin, state, county, statea, countya, adm2_id, starts_with("malrat"))
 
 #' Using all the areas in the model
 areas_model <- areas %>%
@@ -60,8 +61,8 @@ to_int <- function(x) as.numeric(as.factor(x))
 
 #' Create scaffolding for estimates
 df <- crossing(
-  #' We only have data for some of these years, but want to predict the others, 40 is 1940 etc.
-  year = 20:48,
+  #' We only have data for some of these years, but want to predict the others
+  year = 1920:1950,
   areas_model %>%
     st_drop_geometry() %>%
     select(state, county, area_idx)
@@ -81,7 +82,7 @@ df <- df %>%
         names_prefix = "malrat",
         values_to = "malrat_raw"
       ) %>%
-      mutate(year = as.numeric(year)) %>%
+      mutate(year = as.numeric(year) + 1900) %>%
       select(state, county, year, malrat_raw),
     by = c("state", "county", "year")
   )
@@ -95,8 +96,7 @@ normalise <- function(x) {
 
 covariates <- missforest_results$ximp %>%
   mutate(
-    county = df$county, #' Assume that there hasn't been any shuffling of the rows! This is a big dangerous
-    year = year %% 100, #' Issue here with using year as xx on this script and 19xx elsewhere!
+    county = df$county, #' Assume that there hasn't been any shuffling of the rows! This is a bit dangerous
     .after = state
   ) %>%
   mutate(
