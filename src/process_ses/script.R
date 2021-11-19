@@ -25,7 +25,7 @@ df <- usa_data %>%
     starts_with("phone"), #' Y
     starts_with("electric"), #' Y
     starts_with("roadPaved"), #' Y
-    starts_with("school"), #' Y
+    # starts_with("school"), #' Y, but going to ignore school for now!
     starts_with("bvalue"), #' Y
     starts_with("farmval"), #' Y
     starts_with("nhgisradio") #' Y

@@ -21,6 +21,7 @@ df <- crossing(
 )
 
 #' Multiple left_join
+#' Note the "Joining, by = c("state", "county")" with no "year" are the county-characteristics covariates
 df_merged <- reduce(append(list(df), covariates), left_join) %>%
   as.data.frame()
 
@@ -65,9 +66,7 @@ df_imputed <- df_merged %>%
   #' Started looking for workarounds, don't mind if this step takes a lot of computation
   #' One option is to do the imputation separately by state, then maybe no state has that many counties (?)
   #' https://stats.stackexchange.com/questions/157331/random-forest-predictors-have-more-than-53-categories
-  #'
-  #' Remove school for now as well
-  select(-county, -school) %>%
+  select(-county) %>%
   missForest::missForest()
 
 saveRDS(df_imputed, "all-processed-covariates-imputed.rds")
