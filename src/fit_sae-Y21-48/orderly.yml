@@ -30,13 +30,14 @@ packages:
 
 global_resources:
   depends/malariadata.csv: malariadata.csv
+  depends/all-processed-covariates-imputed.rds: all-processed-covariates-imputed.rds
 
 depends:
   data_areas:
     id: latest
     use:
       depends/southern13_areas.geojson: southern13_areas.geojson
-  impute_covariates:
-    id: latest
-    use:
-      depends/all-processed-covariates-imputed.rds: all-processed-covariates-imputed.rds
+  # impute_covariates:
+  #   id: latest
+  #   use:
+  #     depends/all-processed-covariates-imputed.rds: all-processed-covariates-imputed.rds

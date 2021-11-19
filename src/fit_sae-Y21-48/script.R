@@ -101,7 +101,7 @@ covariates <- missforest_results$ximp %>%
   ) %>%
   mutate(
     #' Normalise all of the covariates!
-    across(nhgisfarmcattle:fdf_mean, normalise)
+    across(deaths:fdf_mean, normalise)
   )
 
 df <- left_join(df, covariates, by = c("state", "county", "year"))
