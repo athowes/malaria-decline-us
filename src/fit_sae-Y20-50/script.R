@@ -1,5 +1,5 @@
-# orderly::orderly_develop_start("fit_sae-Y21-48")
-# setwd("src/fit_sae-Y21-48")
+# orderly::orderly_develop_start("fit_sae-Y20-50")
+# setwd("src/fit_sae-Y20-50")
 
 usa_data <- read_csv("depends/malariadata.csv")
 areas <- read_sf("depends/southern13_areas.geojson")

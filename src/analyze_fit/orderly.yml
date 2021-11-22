@@ -21,7 +21,7 @@ packages:
   - readxl
 
 depends:
-  fit_sae-Y21-48:
+  fit_sae-Y20-50:
     id: latest
     use:
       depends/fit.rds: fit.rds
