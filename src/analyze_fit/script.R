@@ -1,5 +1,5 @@
-orderly::orderly_develop_start("analyze_fit")
-setwd("src/analyze_fit")
+# orderly::orderly_develop_start("analyze_fit")
+# setwd("src/analyze_fit")
 
 #' Get fitted model
 fit <- readRDS("depends/fit.rds")
@@ -38,31 +38,34 @@ covariate_table <- covariate_table %>%
 
 #' The variables associated with an increase in malaria rate are
 covariate_table %>%
-  filter(cri == "above")
+  filter(cri == "above") %>%
+  select(variable)
 
 #' The variables associated with a decrease in malaria rate are
 covariate_table %>%
-  filter(cri == "below")
+  filter(cri == "below") %>%
+  select(variable)
 
 #' The non-significant variables are
 covariate_table %>%
-  filter(cri == "zero")
+  filter(cri == "zero") %>%
+  select(variable)
 
-pdf("covariate-imporance.pdf", h = 5, w = 6.5)
+pdf("covariate-imporance.pdf", h = 5, w = 8)
 
-cbpalette <- c("#56B4E9","#009E73", "#E69F00", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999")
-cols <- c("zero" = "#999999", "above" = "#0072B2", "below" = "#CC79A7")
-
-#' -1 removes the intercept which is much bigger than the others!
-names(fit$marginals.fixed)[-1] %>%
-  lapply(function(name)
-    fit$marginals.fixed[[name]] %>%
-    as.data.frame() %>%
-    ggplot(aes(x = x, y = y)) +
-      #' This is a bad way of doing it, but OK
-      geom_line(col = cols[[filter(covariate_table, variable == name)$cri]]) +
-      labs(x = "x", y = "p(x)", title = name) +
-      xlim(c(-0.5, 0.5))
-  )
+covariate_table %>%
+  filter(variable != "(Intercept)") %>%
+  ggplot(aes(x = variable, y = mean, ymin = lower, ymax = upper, col = cri)) +
+    geom_pointrange() +
+    geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.3) +
+    annotate("text", x = 30, y = -0.4, size = 3,
+             label = "*Covariates whose credible interval includes\n zero are consdiered to have no significant effect") +
+    scale_color_manual(values = c("#0072B2", "#CC79A7", "#999999"), labels = c("Higer malaria rate", "Lower malaria rate", "No significant effect*")) +
+    coord_flip() +
+    labs(x = "Covariate", y = "Size", col = "Associated with") +
+    theme_minimal() +
+    theme(
+      legend.position = "bottom",
+    )
 
 dev.off()
