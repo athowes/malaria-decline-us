@@ -7,6 +7,9 @@ artefacts:
         - covariate-importance.csv
         - covariate-imporance.pdf
 
+resouces:
+  - covariate-dictionary.ods
+
 packages:
   - dplyr
   - forcats
@@ -19,6 +22,7 @@ packages:
   - spdep
   - tidyr
   - readxl
+  - readODS
 
 depends:
   fit_sae-Y20-50:

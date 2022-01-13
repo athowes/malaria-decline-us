@@ -51,21 +51,28 @@ covariate_table %>%
   filter(cri == "zero") %>%
   select(variable)
 
-pdf("covariate-imporance.pdf", h = 5, w = 8)
+pdf("covariate-imporance.pdf", h = 8.25, w = 7)
+
+dictionary <- readODS::read_ods("covariate-dictionary.ods")
 
 covariate_table %>%
+  left_join(
+    dictionary,
+    by = "variable"
+  ) %>%
+  mutate(human_variable = reorder(human_variable, -mean)) %>%
   filter(variable != "(Intercept)") %>%
-  ggplot(aes(x = variable, y = mean, ymin = lower, ymax = upper, col = cri)) +
+  ggplot(aes(x = human_variable, y = mean, ymin = lower, ymax = upper, col = cri)) +
     geom_pointrange() +
     geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.3) +
-    annotate("text", x = 30, y = -0.4, size = 3,
-             label = "*Covariates whose credible interval includes\n zero are consdiered to have no significant effect") +
-    scale_color_manual(values = c("#0072B2", "#CC79A7", "#999999"), labels = c("Higer malaria rate", "Lower malaria rate", "No significant effect*")) +
+    facet_grid(group_variable ~ ., scale = "free", space = "free_x") +
+    # annotate("text", x = 30, y = -0.4, size = 3, label = "*Covariates whose credible interval includes\n zero are consdiered to have no significant effect") +
+    scale_color_manual(values = c("#0072B2", "#CC79A7", "#999999"), labels = c("Higer malaria rate", "Lower malaria rate", "No significant effect")) +
     coord_flip() +
-    labs(x = "Covariate", y = "Size", col = "Associated with") +
+    labs(x = "", y = "Size", col = "") +
     theme_minimal() +
     theme(
-      legend.position = "bottom",
+      legend.position = "bottom"
     )
 
 dev.off()
