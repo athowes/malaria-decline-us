@@ -31,20 +31,6 @@ orderly::orderly_commit(id)
 
 Any outputs of this report will then be available to use as dependencies within other reports.
 
-Reports can be pushed to the HIV inference group sharepoint (the remote) using:
-
-```r
-orderly::orderly_push_archive("example")
-```
-
-Or can be pulled (alongside any dependencies) from the remote using:
-
-```r
-orderly_pull_archive("example")
-```
-
-Alternatively, just the dependencies can be pulled using `orderly::orderly_pull_dependencies("example")`.
-
 ## R package dependencies
 
 The `R-INLA` package is not currently available on CRAN, and instead may be installed by following [instructions](https://www.r-inla.org/download-install) from the project website.
