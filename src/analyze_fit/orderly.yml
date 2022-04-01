@@ -4,10 +4,9 @@ artefacts:
   - data:
       description: How important are each of the covariates?
       filenames:
-        - covariate-importance.csv
         - covariate-imporance.pdf
 
-resouces:
+resources:
   - covariate-dictionary.ods
 
 packages:
