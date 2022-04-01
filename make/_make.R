@@ -35,3 +35,6 @@ run_commit_push("fit_sae-Y20-50")
 
 #' Analysis of the fitted model results
 run_commit_push("analyze_fit")
+
+#' Produce slides about analysis so far
+run_commit_push("docs_04-22-stats-epi-group")
