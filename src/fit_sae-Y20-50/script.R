@@ -194,7 +194,7 @@ res_plot %>%
       facet_wrap(~source, ncol = 1) +
       theme_minimal() +
       labs(
-        title = paste0("Year: 19", x$year[[1]]),
+        title = paste0("Year: ", x$year[[1]]),
         fill = "Malaria rate"
       ) +
       theme(

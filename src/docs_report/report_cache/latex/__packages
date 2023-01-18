@@ -1,0 +1,12 @@
+dplyr
+ggplot2
+readr
+scales
+sf
+sp
+spData
+spdep
+tidyr
+readxl
+cowplot
+rmarkdown

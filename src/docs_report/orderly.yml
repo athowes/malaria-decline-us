@@ -1,0 +1,25 @@
+script: script.R
+
+artefacts:
+  - data:
+      description: Report
+      filenames:
+        - report.pdf
+
+resources:
+  - report.Rmd
+  - citations.bib
+  - preamble.tex
+
+packages:
+  - rmarkdown
+
+depends:
+  fit_sae-Y20-50:
+    id: latest
+    use:
+      depends/time-series-state.pdf: time-series-state.pdf
+  analyze_fit:
+    id: latest
+    use:
+      depends/covariate-imporance.pdf: covariate-imporance.pdf
